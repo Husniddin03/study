@@ -12,15 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('username')->unique();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('role')->nullable();
-            $table->rememberToken();
+            $table->uuid('id')->primary();
+            $table->string('username', 50)->unique();
+            $table->string('phone', 20)->unique()->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('password_hash')->nullable(); // phone auth bo'lsa null
+            $table->string('full_name', 100)->nullable();
+            $table->string('avatar_url')->nullable();
+            $table->string('bio', 500)->nullable();
+            $table->boolean('is_verified')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_seen_at')->nullable();
+            $table->json('settings')->nullable(); // notification, privacy sozlamalari
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('username');
+            $table->index('phone');
+            $table->index('last_seen_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
