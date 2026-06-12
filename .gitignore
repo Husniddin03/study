@@ -12,6 +12,7 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.agents
 /auth.json
 /node_modules
 /public/build
@@ -29,4 +30,3 @@ Thumbs.db
 GEMINI.md
 CLAUDE.md
 AGENTS.md
-public/core

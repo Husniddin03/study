@@ -80,12 +80,22 @@ class DeployCommand extends Command
             'git commit -m ' . escapeshellarg($message)
         );
 
-        if (str_contains($commit->output(), 'nothing to commit')) {
+        if (str_contains($commit->output(), 'nothing to commit') || str_contains($commit->errorOutput(), 'nothing to commit')) {
             $this->warn('Nothing to commit');
             return self::SUCCESS;
         }
 
-        Process::run('git push');
+        if ($commit->failed()) {
+            $this->error("Git commit failed:\n" . $commit->errorOutput() . $commit->output());
+            return self::FAILURE;
+        }
+
+        $push = Process::run('git push origin main');
+        
+        if ($push->failed()) {
+            $this->error("Git push failed:\n" . $push->errorOutput() . $push->output());
+            return self::FAILURE;
+        }
 
         $this->info('Deploy completed');
 
